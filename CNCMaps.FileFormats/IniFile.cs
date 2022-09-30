@@ -61,8 +61,11 @@ namespace CNCMaps.FileFormats {
 			var includes = GetOrCreateSection("#include");
 			foreach (var entry in includes.OrderedEntries) {
 				var include = vfs.Open<IniFile>(entry.Value);
+				if (iniFile != null)
+				{
 				include.LoadAresIncludes(vfs); // mechanism even works recursively!
 				MergeWith(include);
+				}
 			}
 		}
 
