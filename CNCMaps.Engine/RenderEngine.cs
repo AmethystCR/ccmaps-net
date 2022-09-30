@@ -238,11 +238,11 @@ namespace CNCMaps.Engine {
 
 					if (!_settings.SavePNGThumbnails) {
 						ds.SaveThumb(dimensions, cutRect,
-							Path.Combine(_settings.OutputDir, "thumb_" + _settings.OutputFile + ".jpg"));
+							Path.Combine(_settings.OutputDir, _settings.OutputFile + ".jpg"));
 					}
 					else {
 						ds.SaveThumb(dimensions, cutRect,
-							Path.Combine(_settings.OutputDir, "thumb_" + _settings.OutputFile + ".png"), true);
+							Path.Combine(_settings.OutputDir, _settings.OutputFile + ".png"), true);
 					}
 				}
 
