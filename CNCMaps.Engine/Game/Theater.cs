@@ -37,6 +37,7 @@ namespace CNCMaps.Engine.Game {
 			_art = art;
 
 			_rules.LoadAresIncludes(vfs);
+			_art.LoadAresIncludes(vfs);
 		}
 
 		public Theater(TheaterType theaterType, EngineType engine, VirtualFileSystem vfs) {

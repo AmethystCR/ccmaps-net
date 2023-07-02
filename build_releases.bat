@@ -22,6 +22,6 @@ msbuild kerfcheck.sln
 
 msbuild CNCMaps.sln /t:restore /t:Build /p:Configuration=Release
 %MAKENSIS% nsisinstaller-rls.nsi
-
+pause
 REM msbuild CNCMaps.sln /p:Configuration=Debug
 REM %MAKENSIS% nsisinstaller-dbg.nsi

@@ -59,12 +59,17 @@ namespace CNCMaps.FileFormats {
 		public void LoadAresIncludes(VirtualFileSystem.VirtualFileSystem vfs) {
 			// support for Ares tag
 			var includes = GetOrCreateSection("#include");
-			foreach (var entry in includes.OrderedEntries) {
-				var include = vfs.Open<IniFile>(entry.Value);
-				if (include != null)
+			foreach (var entry in includes.OrderedEntries)
+			{
+				try
 				{
-				include.LoadAresIncludes(vfs); // mechanism even works recursively!
-				MergeWith(include);
+					var include = vfs.Open<IniFile>(entry.Value);
+					include.LoadAresIncludes(vfs); // mechanism even works recursively!
+					MergeWith(include);
+				}
+				catch
+				{
+					IniFile.logger.Info<IniFile.IniSection.IniValue>("Occured an error when parsing {0}, skipped it.", entry.Value);
 				}
 			}
 		}
@@ -441,7 +446,7 @@ namespace CNCMaps.FileFormats {
 				// numbered arrays are 'appended' instead of overwritten
 				if (IsObjectArray(v.Name)) {
 					try {
-						int number = 1 + int.Parse(ownSection.OrderedEntries.Last().Key);
+						int number = 1 + int.Parse((ownSection.OrderedEntries.Count > 0) ? ownSection.OrderedEntries.Last().Key : "0");
 						foreach (var kvp in v.OrderedEntries)
 							ownSection.SetValue(number++.ToString(), kvp.Value);
 					}
