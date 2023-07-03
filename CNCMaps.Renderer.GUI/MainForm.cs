@@ -38,7 +38,7 @@ namespace CNCMaps.GUI {
 			}
 			Settings.Default.SettingsKey = cfgPath;
 			InitializeComponent();
-
+			UpdateTranslations();
 
 			ConfigurationItemFactory.Default.Targets.RegisterDefinition("GuiTarget", typeof(GuiTarget));
 			if (LogManager.Configuration == null) {
@@ -52,6 +52,29 @@ namespace CNCMaps.GUI {
 				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));
 				LogManager.ReconfigExistingLoggers();
 			}
+		}
+
+		private void UpdateTranslations() {
+			void translate(Control control) {
+				var ret = Localizer.Translate(control.Name);
+				if (ret != null) {
+					control.Text = ret;
+				}
+				foreach (var obj in control.Controls) {
+					var subControl = obj as Control;
+					if (subControl != null) {
+						translate(subControl);
+					}
+				}
+			}
+			translate(this);
+			translate(tpMain);
+			translate(tpMisc);
+			translate(tpBatch);
+			translate(tpLog);
+			translate(tpAbout);
+			translate(lblCopyright);
+			translate(lblBatchDesc);
 		}
 
 		public MainForm(bool skipUpdateCheck) : this() {
@@ -79,7 +102,7 @@ namespace CNCMaps.GUI {
 			if (!_skipUpdateCheck && !Settings.Default.skipupdatecheck)
 				PerformUpdateCheck();
 			else
-				UpdateStatus("not checking for newer version", 100);
+				UpdateStatus(Localizer.TryTranslate("lblStatusNotCheck", "not checking for newer version"), 100);
 			tbInput.Text = Settings.Default.input;
 			tbMixDir.Text = Settings.Default.mixdir;
 			cbOutputJPG.Checked = Settings.Default.outputjpg;
@@ -244,7 +267,7 @@ namespace CNCMaps.GUI {
 			uc.AlreadyLatest += (o, e) => UpdateStatus("already latest version", 100);
 			uc.Connected += (o, e) => UpdateStatus("connected", 10);
 			uc.DownloadProgressChanged += (o, e) => { /* care, xml is small anyway */ };
-			uc.UpdateCheckFailed += (o, e) => UpdateStatus("update check failed", 100);
+			uc.UpdateCheckFailed += (o, e) => UpdateStatus(Localizer.TryTranslate("lblStatusFailed", "update check failed"), 100);
 			uc.UpdateAvailable += (o, e) => {
 				UpdateStatus("update available", 100);
 
@@ -305,7 +328,7 @@ namespace CNCMaps.GUI {
                     return;
 				}
 
-				lblStatus.Text = "Status: " + text;
+				lblStatus.Text = Localizer.TryTranslate("lblStatusPrefix", "Status: ") + text;
 				if (progressBarValue < 100)
                     // forces 'instant update'
                     pbProgress.Value = progressBarValue + 1;
